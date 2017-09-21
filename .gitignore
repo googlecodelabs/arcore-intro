@@ -1,0 +1,15 @@
+.DS_Store
+
+*.csproj
+*.sln
+
+Library/
+Packages/
+ProjectSettings/
+Temp/
+obj/
+
+# ignore the SDK
+GoogleARCore/
+
+

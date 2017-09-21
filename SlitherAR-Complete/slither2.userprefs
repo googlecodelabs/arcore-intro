@@ -1,0 +1,20 @@
+﻿<Properties StartupItem="Assembly-CSharp.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/ScoreboardController.cs">
+    <Files>
+      <File FileName="Assets/SnakeController.cs" Line="97" Column="3" />
+      <File FileName="Assets/SceneController.cs" Line="38" Column="5" />
+      <File FileName="Assets/FoodController.cs" Line="1" Column="1" />
+      <File FileName="Assets/GoogleARCore/HelloARExample/Materials/Shaders/MobileDiffuseWithLightEstimation.shader" Line="1" Column="1" />
+      <File FileName="Assets/GoogleARCore/SDK/Scripts/LightEstimate.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/TrackedPlaneController.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Slithering.cs" Line="59" Column="4" />
+      <File FileName="Assets/FoodConsumer.cs" Line="17" Column="63" />
+      <File FileName="Assets/ScoreboardController.cs" Line="59" Column="37" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
