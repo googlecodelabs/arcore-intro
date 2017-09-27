@@ -47,15 +47,17 @@ public class FoodController : MonoBehaviour
 
 	private void SpawnFoodInstance ()
 	{
-		GameObject foodItem = foodModels [Random.Range (0, foodModels.Length - 1)];
+		GameObject foodItem = foodModels [Random.Range (0, foodModels.Length)];
 
 		// Pick a location.  This is done by selecting a vertex at random and then
 		// a random point between it and the center of the plane.
 		List<Vector3> vertices = new List<Vector3> ();
 		trackedPlane.GetBoundaryPolygon (ref vertices);
-		Vector3 pt = vertices [Random.Range (0, vertices.Count - 1)];
+		Vector3 pt = vertices [Random.Range (0, vertices.Count)];
 		float dist = Random.Range (0.05f, 1f);
 		Vector3 position = Vector3.Lerp (pt, trackedPlane.Position, dist);
+		// Move the object above the plane
+		position.y += .05f;
 
 		Anchor anchor = Session.CreateAnchor (position, Quaternion.identity);
 
@@ -64,7 +66,7 @@ public class FoodController : MonoBehaviour
 		// Set the tag
 		foodInstance.tag = "food";
 
-		foodInstance.transform.localScale = new Vector3 (.01f, .01f, .01f);
+		foodInstance.transform.localScale = new Vector3 (.025f, .025f, .025f);
 		foodAge = 0;
 
 		foodInstance.AddComponent<FoodMotion> ();
