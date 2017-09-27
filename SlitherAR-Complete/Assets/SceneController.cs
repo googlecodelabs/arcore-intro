@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using GoogleARCore;
 
-public class SceneController : MonoBehaviour
-{
+public class SceneController : MonoBehaviour {
+
   public GameObject trackedPlanePrefab;
   public Camera firstPersonCamera;
+  public ScoreboardController scoreboard;
   public SnakeController snakeController;
-  public ScoreboardController scoreboardController;
 
-  void Update ()
-  {
+    void Update () {
     _QuitOnConnectionErrors ();
     // The tracking state must be FrameTrackingState.Tracking in order to access the Frame.
     if (Frame.TrackingState != FrameTrackingState.Tracking) {
@@ -22,13 +21,13 @@ public class SceneController : MonoBehaviour
     Screen.sleepTimeout = SleepTimeout.NeverSleep;
 
     // Add this to the bottom of Update
-    ProcessNewPlanes ();
+    ProcessNewPlanes();
 
     // Add to the end of Update()
-    ProcessTouches ();
+    ProcessTouches();
 
-    scoreboardController.SetScore (snakeController.GetLength ());
-  }
+    scoreboard.SetScore(snakeController.GetLength());
+    }
 
   /// <summary>Coroutine to display an error then exit.</summary>
   private IEnumerator ToastAndExit (string message, int seconds)
@@ -52,7 +51,7 @@ public class SceneController : MonoBehaviour
       AndroidJavaClass toastClass = new AndroidJavaClass ("android.widget.Toast");
       unityActivity.Call ("runOnUiThread", new AndroidJavaRunnable (() => {
         AndroidJavaObject toastObject = toastClass.CallStatic<AndroidJavaObject> (
-                                          "makeText", unityActivity, message, 0);
+          "makeText", unityActivity,message, 0);
         toastObject.Call ("show");
       }));
     }
@@ -73,40 +72,41 @@ public class SceneController : MonoBehaviour
     }
   }
 
-  private void ProcessNewPlanes ()
-  {
-    List<TrackedPlane> planes = new List<TrackedPlane> ();
-    Frame.GetNewPlanes (ref planes);
-    for (int i = 0; i < planes.Count; i++) {
+  private void ProcessNewPlanes() {
+    List<TrackedPlane> planes = new List<TrackedPlane>();
+    Frame.GetNewPlanes(ref planes);
+    for(int i=0;i<planes.Count;i++) {
       // Instantiate a plane visualization prefab and set it to track the new plane. The transform is set to
       // the origin with an identity rotation since the mesh for our prefab is updated in Unity World
       // coordinates.
-      GameObject planeObject = Instantiate (trackedPlanePrefab, Vector3.zero, Quaternion.identity,
-                                 transform);
-      planeObject.GetComponent<TrackedPlaneController> ().SetTrackedPlane (planes [i]);
+      GameObject planeObject = Instantiate(trackedPlanePrefab, Vector3.zero, Quaternion.identity,
+        transform);
+      planeObject.GetComponent<TrackedPlaneController>().SetTrackedPlane(planes[i]);
     }
   }
 
-  private void ProcessTouches ()
-  {
+  private void ProcessTouches() {
     Touch touch;
-    if (Input.touchCount < 1 || (touch = Input.GetTouch (0)).phase != TouchPhase.Began) {
+    if (Input.touchCount < 1 || (touch = Input.GetTouch(0)).phase != TouchPhase.Began)
+    {
       return;
     }
 
     TrackableHit hit;
-    TrackableHitFlag raycastFilter =
-      TrackableHitFlag.PlaneWithinBounds | TrackableHitFlag.PlaneWithinPolygon;
+    TrackableHitFlag raycastFilter = TrackableHitFlag.PlaneWithinBounds | TrackableHitFlag.PlaneWithinPolygon;
 
-    if (Session.Raycast (firstPersonCamera.ScreenPointToRay (touch.position),
-          raycastFilter, out hit)) {
-      SetSelectedPlane (hit.Plane);
+    if (Session.Raycast(firstPersonCamera.ScreenPointToRay(touch.position), raycastFilter, out hit))
+    {
+      SetSelectedPlane(hit.Plane);
     }
   }
 
-  private void SetSelectedPlane (TrackedPlane selectedPlane)
+  private void SetSelectedPlane(TrackedPlane selectedPlane)
   {
-    GetComponent<FoodController> ().SetSelectedPlane (selectedPlane);
-    snakeController.SetPlane (selectedPlane);
+    Debug.Log("Selected plane centered at " + selectedPlane.Position);
+    scoreboard.SetSelectedPlane(selectedPlane);
+    snakeController.SetPlane(selectedPlane);
+    GetComponent<FoodController>().SetSelectedPlane(selectedPlane);
+
   }
 }

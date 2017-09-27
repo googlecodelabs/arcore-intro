@@ -2,20 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Food consumer. Collision detection, then grow snake.
-/// </summary>
-public class FoodConsumer : MonoBehaviour
-{
-  void OnCollisionEnter (Collision collision)
-  {
+public class FoodConsumer : MonoBehaviour {
+
+  void OnCollisionEnter(Collision collision) {
     if (collision.gameObject.tag == "food") {
-      collision.gameObject.SetActive (false);
-      Slithering s = GetComponentInParent<Slithering> ();
+      collision.gameObject.SetActive(false);
+      Slithering s = GetComponentInParent<Slithering>();
 
       if (s != null) {
-        s.AddBodyPart ();
+        s.AddBodyPart();
       }
     }
   }
+
 }

@@ -2,6 +2,7 @@
 
 *.csproj
 *.sln
+*.userprefs
 
 Library/
 Packages/
