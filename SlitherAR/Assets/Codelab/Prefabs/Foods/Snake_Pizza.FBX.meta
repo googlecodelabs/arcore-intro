@@ -1,23 +1,24 @@
 fileFormatVersion: 2
-guid: 8057518a65042468cb7b6a3ac31f9361
-timeCreated: 1506472843
-licenseType: Pro
+guid: d7141c79b97af4fd0862913481c11f3c
+timeCreated: 1506545060
+licenseType: Free
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
     100000: //RootNode
     400000: //RootNode
-    2100000: 'Material #1988'
+    2100000: No Name
     2300000: //RootNode
     3300000: //RootNode
-    4300000: mushroom
+    4300000: Box006
     6400000: //RootNode
+    9500000: //RootNode
   externalObjects:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: 'Material #1988'
-    second: {fileID: 2100000, guid: c735607e0dfd4407c9ce362475143ef4, type: 2}
+      name: No Name
+    second: {fileID: 2100000, guid: a6dfca5e67a2c43fbac318f5ca5e2ea8, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
@@ -47,7 +48,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 0.1
+    globalScale: 1
     meshCompression: 0
     addColliders: 1
     importVisibility: 1
@@ -89,7 +90,7 @@ ModelImporter:
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 0
+  animationType: 2
   humanoidOversampling: 1
   additionalBone: 0
   userData: 
