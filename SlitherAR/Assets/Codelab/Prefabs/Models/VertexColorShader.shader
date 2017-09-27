@@ -11,16 +11,17 @@
 		
 		CGPROGRAM
 		// Physically based Standard lighting model, and enable shadows on all light types
-		#pragma surface surf Standard fullforwardshadows
+		#pragma surface surf Standard fullforwardshadows  finalcolor:lightEstimation
 
 		// Use shader model 3.0 target, to get nicer looking lighting
 		#pragma target 3.0
 
 		sampler2D _MainTex;
+		fixed _GlobalLightEstimation;
 
 		struct Input {
 			float2 uv_MainTex;
-      float4 color: Color; // Vertex color
+            float4 color: Color; // Vertex color
 		};
 
 		half _Glossiness;
@@ -43,6 +44,12 @@
 			o.Smoothness = _Glossiness;
 			o.Alpha = c.a * IN.color.a;
 		}
+
+
+        void lightEstimation(Input IN, SurfaceOutputStandard o, inout fixed4 color)
+        {
+            color *= _GlobalLightEstimation;
+        }
 		ENDCG
 	}
 	FallBack "Diffuse"

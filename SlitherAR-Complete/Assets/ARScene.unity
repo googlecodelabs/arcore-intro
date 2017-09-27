@@ -335,7 +335,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   foodModels:
-  - {fileID: 100000, guid: 8057518a65042468cb7b6a3ac31f9361, type: 3}
+  - {fileID: 100000, guid: b7fe294c7d7514a0f9717e1be0408878, type: 3}
+  - {fileID: 100000, guid: dcfcb6639910b4a1fa1b3d88d53879f0, type: 3}
+  - {fileID: 100000, guid: d7141c79b97af4fd0862913481c11f3c, type: 3}
 --- !u!1001 &855449400
 Prefab:
   m_ObjectHideFlags: 0

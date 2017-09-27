@@ -51,7 +51,7 @@ public class PlaneRenderer : MonoBehaviour {
 	public void Initialize() {
 		// Apply a random color and grid rotation.
 		GetComponent<Renderer> ().material.SetColor ("_GridColor",
-			planeColors [Random.Range (0, planeColors.Length - 1)]);
+			planeColors [Random.Range (0, planeColors.Length)]);
 		GetComponent<Renderer> ().material.SetFloat ("_UvRotation",
 			Random.Range (0.0f, 360.0f));
 	}
