@@ -38,10 +38,8 @@ public class SnakeController : MonoBehaviour {
       Vector3 pos = pointer.transform.position;
       pos.y = pt.y;
       pointer.transform.position = pos;
-      pointer.GetComponent<PlaneAttachment>().Attach(hit.Plane);
 
       // Now lerp to the position
-
       pointer.transform.position = Vector3.Lerp(pointer.transform.position ,pt,
         Time.smoothDeltaTime * speed);
     }

@@ -5,7 +5,6 @@ using GoogleARCore;
 
 public class FoodController : MonoBehaviour {
   private TrackedPlane trackedPlane;
-  private Bounds spawnBounds = new Bounds ();
   private GameObject foodInstance;
   private float foodAge;
   private readonly float maxAge = 10f;
@@ -30,17 +29,7 @@ public class FoodController : MonoBehaviour {
     if (!trackedPlane.IsValid) {
       return;
     }
-
-    if (trackedPlane.IsUpdated) {
-      spawnBounds.center = trackedPlane.Position;
-      // subtract a small amount to match the plane rendering and mesh so we
-      // avoid the edge.
-      spawnBounds.extents = new Vector3(
-        trackedPlane.Bounds.x/2f - .2f,
-        0, // it is a plane.
-        trackedPlane.Bounds.y/2f - .2f);
-    }
-
+			
     if (foodInstance == null || foodInstance.activeSelf == false) {
       SpawnFoodInstance();
       return;
@@ -56,12 +45,13 @@ public class FoodController : MonoBehaviour {
   private void SpawnFoodInstance() {
     GameObject foodItem = foodModels[Random.Range(0,foodModels.Length-1)];
 
-    // Pick a location - TODO would be nice to have a min distance away
-    // from the previous distance.
-
-    float x = Random.Range(spawnBounds.min.x, spawnBounds.max.x);
-    float z = Random.Range(spawnBounds.min.z, spawnBounds.max.z);
-    Vector3 position = new Vector3(x, trackedPlane.Position.y+.05f, z);
+    // Pick a location.  This is done by selecting a vertex at random and then
+	// a random point between it and the center of the plane.
+		List<Vector3> vertices = new List<Vector3>();
+		trackedPlane.GetBoundaryPolygon (ref vertices);
+		Vector3 pt = vertices [Random.Range (0, vertices.Count - 1)];
+		float dist = Random.Range (0.05f, 1f);
+		Vector3 position = Vector3.Lerp (pt, trackedPlane.Position, dist);
 
     Anchor anchor = Session.CreateAnchor(position, Quaternion.identity);
 
@@ -73,8 +63,6 @@ public class FoodController : MonoBehaviour {
      foodInstance.transform.localScale = new Vector3(.01f,.01f,.01f);
     foodAge = 0;
 
-    foodInstance.AddComponent<PlaneAttachment>();
-    foodInstance.GetComponent<PlaneAttachment>().Attach(trackedPlane  );
     foodInstance.AddComponent<FoodMotion>();
   }
 }

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311947, g: 0.38074005, b: 0.35872722, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -222,7 +222,6 @@ MonoBehaviour:
   speed: 10
   rotationSpeed: 50
   minDistance: 0.075
-  startingSize: 1
 --- !u!4 &126111177
 Transform:
   m_ObjectHideFlags: 0
@@ -306,7 +305,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85f2d505e55834091b482b5f4e3313a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trackedPlanePrefab: {fileID: 1367892275781886, guid: f3b5d15afa8b248bf8d86aa2d6744449,
+  trackedPlanePrefab: {fileID: 1095558029202366, guid: 295dfc00e83a7448c9a47ca52e7a7c93,
     type: 2}
   firstPersonCamera: {fileID: 1731372432}
   scoreboard: {fileID: 1106623051}
