@@ -1,12 +1,41 @@
-﻿using System.Collections;
+﻿//-----------------------------------------------------------------------
+//// <copyright file="SceneController.cs" company="Google">
+/////
+///// Copyright 2017 Google Inc. All Rights Reserved.
+/////
+///// Licensed under the Apache License, Version 2.0 (the "License");
+///// you may not use this file except in compliance with the License.
+///// You may obtain a copy of the License at
+/////
+///// http://www.apache.org/licenses/LICENSE-2.0
+/////
+///// Unless required by applicable law or agreed to in writing, software
+///// distributed under the License is distributed on an "AS IS" BASIS,
+///// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+///// See the License for the specific language governing permissions and
+///// limitations under the License.
+/////
+///// </copyright>
+/////-----------------------------------------------------------------------
+///
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GoogleARCore;
 
+/// <summary>
+/// SceneController for Slither - AR codelab.
+/// </summary>
+/// <remarks>
+/// See the codelab for the complete narrative of what
+/// this class does.
+/// </remarks>
 public class SceneController : MonoBehaviour
 {
 
+    // Prefab used to render all the tracked planes.
     public GameObject trackedPlanePrefab;
+    // Camera used for tap input raycasting.
     public Camera firstPersonCamera;
     public ScoreboardController scoreboard;
     public SnakeController snakeController;
@@ -14,9 +43,10 @@ public class SceneController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        // Check on startup that this device is compatible with ARCore apps.
         QuitOnConnectionErrors();
     }
-	
+
     // Update is called once per frame
     void Update()
     {
@@ -61,6 +91,9 @@ public class SceneController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// List the newly detected planes from the ARCore Frame object and render them.
+    /// </summary>
     private void ProcessNewPlanes()
     {
         List<TrackedPlane> planes = new List<TrackedPlane>();
@@ -71,18 +104,21 @@ public class SceneController : MonoBehaviour
             // the origin with an identity rotation since the mesh for our prefab is updated in Unity World
             // coordinates.
             GameObject planeObject = Instantiate(trackedPlanePrefab, Vector3.zero, Quaternion.identity,
-                                   transform);
+                                         transform);
             planeObject.GetComponent<TrackedPlaneController>().SetTrackedPlane(planes[i]);
         }
     }
 
+    /// <summary>
+    /// Processes a single tap to select a plane based on a hittest.
+    /// </summary>
     private void ProcessTouches()
     {
         Touch touch;
         if (Input.touchCount != 1 || (touch = Input.GetTouch(0)).phase != TouchPhase.Began)
         {
             return;
-        } 
+        }
 
         TrackableHit hit;
         TrackableHitFlag raycastFilter = TrackableHitFlag.PlaneWithinBounds | TrackableHitFlag.PlaneWithinPolygon;
@@ -93,6 +129,9 @@ public class SceneController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Sets  the selected plane and passes it to the other controllers that are part of the scene.
+    /// </summary>
     private void SetSelectedPlane(TrackedPlane selectedPlane)
     {
         Debug.Log("Selected plane centered at " + selectedPlane.Position);
@@ -101,9 +140,7 @@ public class SceneController : MonoBehaviour
         // Add to SetSelectedPlane()
         snakeController.SetPlane(selectedPlane);
 
-        // Add to the bottom of SetSelectedPlane() 
+        // Add to the bottom of SetSelectedPlane()
         GetComponent<FoodController>().SetSelectedPlane(selectedPlane);
-
-
     }
 }

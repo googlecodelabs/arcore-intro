@@ -30,7 +30,7 @@ using UnityEngine;
 /// </remarks>
 public class CodelabUtils
 {
-
+  
     /// <summary>Coroutine to display an error then exit.</summary>
     public static IEnumerator ToastAndExit(string message, int seconds)
     {

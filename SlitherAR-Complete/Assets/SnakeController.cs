@@ -1,18 +1,49 @@
-﻿using System.Collections;
+﻿//-----------------------------------------------------------------------
+//// <copyright file="SnakeController.cs" company="Google">
+/////
+///// Copyright 2017 Google Inc. All Rights Reserved.
+/////
+///// Licensed under the Apache License, Version 2.0 (the "License");
+///// you may not use this file except in compliance with the License.
+///// You may obtain a copy of the License at
+/////
+///// http://www.apache.org/licenses/LICENSE-2.0
+/////
+///// Unless required by applicable law or agreed to in writing, software
+///// distributed under the License is distributed on an "AS IS" BASIS,
+///// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+///// See the License for the specific language governing permissions and
+///// limitations under the License.
+/////
+///// </copyright>
+/////-----------------------------------------------------------------------
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GoogleARCore;
 
+/// <summary>
+/// SnakeController for Slither - AR codelab.
+/// </summary>
+/// <remarks>
+/// See the codelab for the complete narrative of what
+/// this class does.
+/// </remarks>
 public class SnakeController : MonoBehaviour
 {
+    // The plane to create the snake on.
     private TrackedPlane trackedPlane;
 
+    // Prefab for the snake head.  It is required to have
+    // a rigidbody component.
     public GameObject snakeHeadPrefab;
+    // Instance of the snakeHead prefab.
     private GameObject snakeInstance;
-
+    // Pointer object to lead the snake around.
     public GameObject pointer;
+    // Camera used for raycasting screen point.
     public Camera firstPersonCamera;
-    // speed to move.
+    // Speed to move.
     public float speed = 20f;
 
     // Update is called once per frame
@@ -27,11 +58,14 @@ public class SnakeController : MonoBehaviour
         {
             pointer.SetActive(true);
         }
+
+        // Raycast the center of the screen as the gaze point.
         Ray ray = firstPersonCamera.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2));
 
         TrackableHit hit;
-        TrackableHitFlag raycastFilter = TrackableHitFlag.PlaneWithinBounds;    
+        TrackableHitFlag raycastFilter = TrackableHitFlag.PlaneWithinBounds;
 
+        // If it hits an ARCore plane, move the pointer to that location.
         if (Session.Raycast(ray, raycastFilter, out hit))
         {
             Vector3 pt = hit.Point;
@@ -40,14 +74,14 @@ public class SnakeController : MonoBehaviour
             // Set the y position relative to the plane and attach the pointer to the plane
             Vector3 pos = pointer.transform.position;
             pos.y = pt.y;
-            pointer.transform.position = pos; 
+            pointer.transform.position = pos;
 
             // Now lerp to the position
             pointer.transform.position = Vector3.Lerp(pointer.transform.position, pt,
                 Time.smoothDeltaTime * speed);
         }
 
-        // move towards the pointer, slow down if very close.
+        // Move towards the pointer, slow down if very close.
         float dist = Vector3.Distance(pointer.transform.position,
                      snakeInstance.transform.position) - 0.05f;
         if (dist < 0)
