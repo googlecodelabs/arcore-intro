@@ -21,7 +21,6 @@ GameObject:
   - component: {fileID: 4164932791112670}
   - component: {fileID: 33279965792497342}
   - component: {fileID: 23999498016557570}
-  - component: {fileID: 114736045172041532}
   m_Layer: 0
   m_Name: gazePointer
   m_TagString: Untagged
@@ -83,14 +82,3 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1174593695584170}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &114736045172041532
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1174593695584170}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c6585d501f934e9c9a7dbfd7a7d188a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

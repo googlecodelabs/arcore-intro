@@ -87,7 +87,7 @@ public class SceneController : MonoBehaviour {
 
   private void ProcessTouches() {
     Touch touch;
-    if (Input.touchCount < 1 || (touch = Input.GetTouch(0)).phase != TouchPhase.Began)
+    if (Input.touchCount != 1 || (touch = Input.GetTouch(0)).phase != TouchPhase.Began)
     {
       return;
     }
