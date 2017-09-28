@@ -7,10 +7,10 @@ using UnityEngine;
 /// </summary>
 public class FoodMotion : MonoBehaviour
 {
-  float speed = 30;
+    float speed = 20f;
 
-  void Update ()
-  {
-    transform.Rotate (Vector3.down, Time.deltaTime * speed * 5);
-  }
+    void Update()
+    {
+        transform.Rotate(Vector3.down, Time.deltaTime * speed * 5);
+    }
 }

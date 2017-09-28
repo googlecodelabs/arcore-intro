@@ -2,17 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FoodConsumer : MonoBehaviour {
+public class FoodConsumer : MonoBehaviour
+{
 
-  void OnCollisionEnter(Collision collision) {
-    if (collision.gameObject.tag == "food") {
-      collision.gameObject.SetActive(false);
-      Slithering s = GetComponentInParent<Slithering>();
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "food")
+        {
+            collision.gameObject.SetActive(false);
+            Slithering s = GetComponentInParent<Slithering>();
 
-      if (s != null) {
-        s.AddBodyPart();
-      }
+            if (s != null)
+            {
+                s.AddBodyPart();
+            }
+        }
     }
-  }
 
 }
