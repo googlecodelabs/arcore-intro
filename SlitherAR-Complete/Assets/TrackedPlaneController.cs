@@ -51,7 +51,7 @@ public class TrackedPlaneController : MonoBehaviour
     public void SetTrackedPlane(TrackedPlane plane)
     {
         trackedPlane = plane;
-        trackedPlane.GetBoundaryPolygon(ref polygonVertices);
+        trackedPlane.GetBoundaryPolygon (polygonVertices);
         planeRenderer.Initialize();
         planeRenderer.UpdateMeshWithCurrentTrackedPlane(trackedPlane.Position, polygonVertices);
     }
@@ -74,7 +74,7 @@ public class TrackedPlaneController : MonoBehaviour
         }
 
         // If this plane is not valid or ARCore is not tracking, disable rendering.
-        if (!trackedPlane.IsValid || Frame.TrackingState != FrameTrackingState.Tracking)
+        if (trackedPlane.TrackingState != TrackingState.Tracking || Frame.TrackingState != TrackingState.Tracking)
         {
             planeRenderer.EnablePlane(false);
             return;
@@ -82,10 +82,37 @@ public class TrackedPlaneController : MonoBehaviour
 
         // OK! Valid plane, so enable rendering and update the polygon data if needed.
         planeRenderer.EnablePlane(true);
-        if (trackedPlane.IsUpdated)
-        {
-            trackedPlane.GetBoundaryPolygon(ref polygonVertices);
-            planeRenderer.UpdateMeshWithCurrentTrackedPlane(trackedPlane.Position, polygonVertices);
+
+        // Update renderer mesh if there is change in plane polygon.
+        List<Vector3> newPolygonVertices = new List<Vector3> ();
+        trackedPlane.GetBoundaryPolygon (newPolygonVertices);
+        if (!AreVerticesListsEqual (polygonVertices, newPolygonVertices)) {
+            polygonVertices.Clear ();
+            polygonVertices.AddRange (newPolygonVertices);
+
+            planeRenderer.UpdateMeshWithCurrentTrackedPlane (trackedPlane.Position,
+                polygonVertices);
         }
+	}
+
+
+
+    private bool AreVerticesListsEqual(List<Vector3> firstList, List<Vector3> secondList)
+    {
+        if (firstList.Count != secondList.Count)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < firstList.Count; i++)
+        {
+            if (firstList[i] != secondList[i])
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
+
 }
