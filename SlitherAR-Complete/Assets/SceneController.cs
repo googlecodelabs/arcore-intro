@@ -51,7 +51,7 @@ public class SceneController : MonoBehaviour
     void Update()
     {
         // The tracking state must be FrameTrackingState.Tracking in order to access the Frame.
-        if (Frame.TrackingState != FrameTrackingState.Tracking)
+        if (Frame.TrackingState != TrackingState.Tracking)
         {
             const int LOST_TRACKING_SLEEP_TIMEOUT = 15;
             Screen.sleepTimeout = LOST_TRACKING_SLEEP_TIMEOUT;
@@ -74,12 +74,7 @@ public class SceneController : MonoBehaviour
     private void QuitOnConnectionErrors()
     {
         // Do not update if ARCore is not tracking.
-        if (Session.ConnectionState == SessionConnectionState.DeviceNotSupported)
-        {
-            StartCoroutine(CodelabUtils.ToastAndExit(
-                    "This device does not support ARCore.", 5));
-        }
-        else if (Session.ConnectionState == SessionConnectionState.UserRejectedNeededPermission)
+        if (Session.ConnectionState == SessionConnectionState.UserRejectedNeededPermission)
         {
             StartCoroutine(CodelabUtils.ToastAndExit(
                     "Camera permission is needed to run this application.", 5));
@@ -97,7 +92,7 @@ public class SceneController : MonoBehaviour
     private void ProcessNewPlanes()
     {
         List<TrackedPlane> planes = new List<TrackedPlane>();
-        Frame.GetNewPlanes(ref planes);
+        Frame.GetPlanes(planes, TrackableQueryFilter.New);
         for (int i = 0; i < planes.Count; i++)
         {
             // Instantiate a plane visualization prefab and set it to track the new plane. The transform is set to
@@ -121,11 +116,11 @@ public class SceneController : MonoBehaviour
         }
 
         TrackableHit hit;
-        TrackableHitFlag raycastFilter = TrackableHitFlag.PlaneWithinBounds | TrackableHitFlag.PlaneWithinPolygon;
+        TrackableHitFlags raycastFilter = TrackableHitFlags.PlaneWithinBounds | TrackableHitFlags.PlaneWithinPolygon;
 
-        if (Session.Raycast(firstPersonCamera.ScreenPointToRay(touch.position), raycastFilter, out hit))
+        if (Session.Raycast (touch.position.x, touch.position.y, raycastFilter, out hit))
         {
-            SetSelectedPlane(hit.Plane);
+            SetSelectedPlane (hit.Trackable as TrackedPlane);
         }
     }
 

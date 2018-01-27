@@ -50,7 +50,7 @@ public class FoodController : MonoBehaviour
             return;
         }
 
-        if (!trackedPlane.IsValid)
+        if (trackedPlane.TrackingState != TrackingState.Tracking)
         {
             return;
         }
@@ -87,7 +87,7 @@ public class FoodController : MonoBehaviour
         // Pick a location.  This is done by selecting a vertex at random and then
         // a random point between it and the center of the plane.
         List<Vector3> vertices = new List<Vector3>();
-        trackedPlane.GetBoundaryPolygon(ref vertices);
+        trackedPlane.GetBoundaryPolygon (vertices);
         Vector3 pt = vertices[Random.Range(0, vertices.Count)];
         float dist = Random.Range(0.05f, 1f);
         Vector3 position = Vector3.Lerp(pt, trackedPlane.Position, dist);
@@ -95,7 +95,7 @@ public class FoodController : MonoBehaviour
         position.y += .05f;
 
         // Create an ARCore anchor for this position.
-        Anchor anchor = Session.CreateAnchor(position, Quaternion.identity);
+        Anchor anchor = trackedPlane.CreateAnchor (new Pose (position, Quaternion.identity));
 
         // Create the instance.
         foodInstance = Instantiate(foodItem, position, Quaternion.identity, anchor.transform);
@@ -104,6 +104,7 @@ public class FoodController : MonoBehaviour
         foodInstance.tag = "food";
 
         foodInstance.transform.localScale = new Vector3(.025f, .025f, .025f);
+        foodInstance.transform.SetParent (anchor.transform);
         foodAge = 0;
 
         foodInstance.AddComponent<FoodMotion>();

@@ -59,16 +59,13 @@ public class SnakeController : MonoBehaviour
             pointer.SetActive(true);
         }
 
-        // Raycast the center of the screen as the gaze point.
-        Ray ray = firstPersonCamera.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2));
-
         TrackableHit hit;
-        TrackableHitFlag raycastFilter = TrackableHitFlag.PlaneWithinBounds;
+        TrackableHitFlags raycastFilter = TrackableHitFlags.PlaneWithinBounds;        
 
         // If it hits an ARCore plane, move the pointer to that location.
-        if (Session.Raycast(ray, raycastFilter, out hit))
+        if (Session.Raycast (Screen.width/2, Screen.height/2, raycastFilter, out hit))
         {
-            Vector3 pt = hit.Point;
+            Vector3 pt = hit.Pose.position; 
             //Set the Y to the Y of the snakeInstance
             pt.y = snakeInstance.transform.position.y;
             // Set the y position relative to the plane and attach the pointer to the plane

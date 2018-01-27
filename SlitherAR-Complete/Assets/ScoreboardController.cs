@@ -55,8 +55,8 @@ public class ScoreboardController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // The tracking state must be FrameTrackingState.Tracking in order to access the Frame.
-        if (Frame.TrackingState != FrameTrackingState.Tracking)
+        // The tracking state must be TrackingState.Tracking in order to access the Frame.
+        if (Frame.TrackingState != TrackingState.Tracking)
         {
             return;
         }
@@ -78,11 +78,8 @@ public class ScoreboardController : MonoBehaviour
         transform.LookAt(firstPersonCamera.transform);
 
         // Move the position to stay consistent with the plane
-        if (trackedPlane.IsUpdated)
-        {
-            transform.position = new Vector3(transform.position.x,
+        transform.position = new Vector3(transform.position.x,
                 trackedPlane.Position.y + yOffset, transform.position.z);
-        }
     }
 
     /// <summary>
@@ -109,7 +106,7 @@ public class ScoreboardController : MonoBehaviour
         {
             DestroyObject(anchor);
         }
-        anchor = Session.CreateAnchor(anchorPosition, Quaternion.identity);
+        anchor = trackedPlane.CreateAnchor (new Pose (anchorPosition, Quaternion.identity));
 
         // Attach the scoreboard to the anchor.
         transform.position = anchorPosition;
