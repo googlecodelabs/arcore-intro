@@ -60,18 +60,18 @@ public class SnakeController : MonoBehaviour
         }
 
         TrackableHit hit;
-        TrackableHitFlags raycastFilter = TrackableHitFlags.PlaneWithinBounds;        
+        TrackableHitFlags raycastFilter = TrackableHitFlags.PlaneWithinBounds;    
 
         // If it hits an ARCore plane, move the pointer to that location.
-        if (Session.Raycast (Screen.width/2, Screen.height/2, raycastFilter, out hit))
+        if (Frame.Raycast (Screen.width/2, Screen.height/2, raycastFilter, out hit))
         {
-            Vector3 pt = hit.Pose.position; 
+            Vector3 pt = hit.Pose.position;
             //Set the Y to the Y of the snakeInstance
             pt.y = snakeInstance.transform.position.y;
             // Set the y position relative to the plane and attach the pointer to the plane
             Vector3 pos = pointer.transform.position;
             pos.y = pt.y;
-            pointer.transform.position = pos;
+            pointer.transform.position = pos; 
 
             // Now lerp to the position
             pointer.transform.position = Vector3.Lerp(pointer.transform.position, pt,
@@ -99,18 +99,19 @@ public class SnakeController : MonoBehaviour
         SpawnSnake();
     }
 
-    private void SpawnSnake()
+    void SpawnSnake()
     {
         if (snakeInstance != null)
         {
             DestroyImmediate(snakeInstance);
         }
 
-        Vector3 pos = trackedPlane.Position;
+        Vector3 pos = trackedPlane.CenterPose.position;
         pos.y += 0.1f;
 
         // Not anchored, it is rigidbody that is influenced by the physics engine.
-        snakeInstance = Instantiate(snakeHeadPrefab, pos, Quaternion.identity, transform);
+        snakeInstance = Instantiate (snakeHeadPrefab, pos,
+            Quaternion.identity, transform);
 
         // Pass the head to the slithering component to make movement work.
         GetComponent<Slithering>().Head = snakeInstance.transform;

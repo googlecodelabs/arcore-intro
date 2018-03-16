@@ -53,9 +53,12 @@ public class TrackedPlaneController : MonoBehaviour
         trackedPlane = plane;
         trackedPlane.GetBoundaryPolygon (polygonVertices);
         planeRenderer.Initialize();
-        planeRenderer.UpdateMeshWithCurrentTrackedPlane(trackedPlane.Position, polygonVertices);
+        planeRenderer.UpdateMeshWithCurrentTrackedPlane(
+	    trackedPlane.CenterPose.position,
+	    polygonVertices);
     }
 
+    // Update is called once per frame.
     void Update()
     {
         // If no plane yet, disable the renderer and return.
@@ -74,7 +77,7 @@ public class TrackedPlaneController : MonoBehaviour
         }
 
         // If this plane is not valid or ARCore is not tracking, disable rendering.
-        if (trackedPlane.TrackingState != TrackingState.Tracking || Frame.TrackingState != TrackingState.Tracking)
+        if (trackedPlane.TrackingState != TrackingState.Tracking || Session.Status != SessionStatus.Tracking)
         {
             planeRenderer.EnablePlane(false);
             return;
@@ -90,14 +93,12 @@ public class TrackedPlaneController : MonoBehaviour
             polygonVertices.Clear ();
             polygonVertices.AddRange (newPolygonVertices);
 
-            planeRenderer.UpdateMeshWithCurrentTrackedPlane (trackedPlane.Position,
+            planeRenderer.UpdateMeshWithCurrentTrackedPlane (trackedPlane.CenterPose.position,
                 polygonVertices);
         }
-	}
+    }
 
-
-
-    private bool AreVerticesListsEqual(List<Vector3> firstList, List<Vector3> secondList)
+    bool AreVerticesListsEqual(List<Vector3> firstList, List<Vector3> secondList)
     {
         if (firstList.Count != secondList.Count)
         {
@@ -111,7 +112,6 @@ public class TrackedPlaneController : MonoBehaviour
                 return false;
             }
         }
-
         return true;
     }
 

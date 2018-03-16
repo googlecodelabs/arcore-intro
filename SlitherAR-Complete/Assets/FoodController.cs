@@ -90,8 +90,8 @@ public class FoodController : MonoBehaviour
         trackedPlane.GetBoundaryPolygon (vertices);
         Vector3 pt = vertices[Random.Range(0, vertices.Count)];
         float dist = Random.Range(0.05f, 1f);
-        Vector3 position = Vector3.Lerp(pt, trackedPlane.Position, dist);
-        // Move the object above the plane
+        Vector3 position = Vector3.Lerp(pt, trackedPlane.CenterPose.position, dist);
+        // Move the object above the plane.
         position.y += .05f;
 
         // Create an ARCore anchor for this position.

@@ -40,12 +40,11 @@ public class ScoreboardController : MonoBehaviour
     private TrackedPlane trackedPlane;
     // The scoreboard's offset from the plane in the Y axis.
     private float yOffset;
-    private int score = 0;
-
+    private int score;
+    
     // Use this for initialization
-    void Start()
+    void Start ()
     {
-        // Disable all the renderers on startup.
         foreach (Renderer r in GetComponentsInChildren<Renderer>())
         {
             r.enabled = false;
@@ -55,8 +54,8 @@ public class ScoreboardController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // The tracking state must be TrackingState.Tracking in order to access the Frame.
-        if (Frame.TrackingState != TrackingState.Tracking)
+        // The session status must be Tracking in order to access the Frame.
+        if (Session.Status != SessionStatus.Tracking)
         {
             return;
         }
@@ -67,7 +66,7 @@ public class ScoreboardController : MonoBehaviour
             return;
         }
 
-        // Check for the plane being subsumed
+        // Check for the plane being subsumed.
         // If the plane has been subsumed switch attachment to the subsuming plane.
         while (trackedPlane.SubsumedBy != null)
         {
@@ -79,7 +78,8 @@ public class ScoreboardController : MonoBehaviour
 
         // Move the position to stay consistent with the plane
         transform.position = new Vector3(transform.position.x,
-                trackedPlane.Position.y + yOffset, transform.position.z);
+            trackedPlane.CenterPose.position.y + yOffset,
+            transform.position.z);
     }
 
     /// <summary>
@@ -112,10 +112,10 @@ public class ScoreboardController : MonoBehaviour
         transform.position = anchorPosition;
         transform.SetParent(anchor.transform);
 
-        // record the y offset from the plane
-        yOffset = transform.position.y - trackedPlane.Position.y;
+        // Record the y offset from the plane.
+        yOffset = transform.position.y - trackedPlane.CenterPose.position.y;
 
-        // Finally, enable the renderers
+        // Finally, enable the renderers.
         foreach (Renderer r in GetComponentsInChildren<Renderer>())
         {
             r.enabled = true;

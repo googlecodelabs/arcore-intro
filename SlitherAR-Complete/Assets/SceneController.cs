@@ -50,13 +50,13 @@ public class SceneController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // The tracking state must be FrameTrackingState.Tracking in order to access the Frame.
-        if (Frame.TrackingState != TrackingState.Tracking)
-        {
-            const int LOST_TRACKING_SLEEP_TIMEOUT = 15;
-            Screen.sleepTimeout = LOST_TRACKING_SLEEP_TIMEOUT;
+        // The session status must be Tracking in order to access the Frame.
+        if (Session.Status != SessionStatus.Tracking) {
+            const int lostTrackingSleepTimeout = 15;
+            Screen.sleepTimeout = lostTrackingSleepTimeout;
             return;
         }
+
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
 
         // Add this to the bottom of Update
@@ -71,35 +71,34 @@ public class SceneController : MonoBehaviour
     /// <summary>
     /// Quit the application if there was a connection error for the ARCore session.
     /// </summary>
-    private void QuitOnConnectionErrors()
+    void QuitOnConnectionErrors()
     {
         // Do not update if ARCore is not tracking.
-        if (Session.ConnectionState == SessionConnectionState.UserRejectedNeededPermission)
-        {
-            StartCoroutine(CodelabUtils.ToastAndExit(
-                    "Camera permission is needed to run this application.", 5));
-        }
-        else if (Session.ConnectionState == SessionConnectionState.ConnectToServiceFailed)
-        {
-            StartCoroutine(CodelabUtils.ToastAndExit(
-                    "ARCore encountered a problem connecting.  Please start the app again.", 5));
+        if (Session.Status == SessionStatus.ErrorPermissionNotGranted) {
+            StartCoroutine (CodelabUtils.ToastAndExit (
+                "Camera permission is needed to run this application.", 5));
+        } else if (Session.Status.IsError ()) {
+            // This covers a variety of errors.  See reference for details
+            // https://developers.google.com/ar/reference/unity/namespace/GoogleARCore
+            StartCoroutine (CodelabUtils.ToastAndExit (
+                "ARCore encountered a problem connecting.  Please start the app again.", 5));
         }
     }
 
     /// <summary>
     /// List the newly detected planes from the ARCore Frame object and render them.
     /// </summary>
-    private void ProcessNewPlanes()
+    void ProcessNewPlanes()
     {
         List<TrackedPlane> planes = new List<TrackedPlane>();
-        Frame.GetPlanes(planes, TrackableQueryFilter.New);
-        for (int i = 0; i < planes.Count; i++)
-        {
-            // Instantiate a plane visualization prefab and set it to track the new plane. The transform is set to
-            // the origin with an identity rotation since the mesh for our prefab is updated in Unity World
-            // coordinates.
-            GameObject planeObject = Instantiate(trackedPlanePrefab, Vector3.zero, Quaternion.identity,
-                                         transform);
+        Session.GetTrackables (planes, TrackableQueryFilter.New);
+
+        for (int i = 0; i < planes.Count; i++) {
+            // Instantiate a plane visualization prefab and set it to track the new plane.
+            // The transform is set to the origin with an identity rotation since the mesh
+            // for our prefab is updated in Unity World coordinates.
+            GameObject planeObject = Instantiate(trackedPlanePrefab, Vector3.zero,
+                                Quaternion.identity, transform);
             planeObject.GetComponent<TrackedPlaneController>().SetTrackedPlane(planes[i]);
         }
     }
@@ -107,7 +106,7 @@ public class SceneController : MonoBehaviour
     /// <summary>
     /// Processes a single tap to select a plane based on a hittest.
     /// </summary>
-    private void ProcessTouches()
+    void ProcessTouches()
     {
         Touch touch;
         if (Input.touchCount != 1 || (touch = Input.GetTouch(0)).phase != TouchPhase.Began)
@@ -118,19 +117,16 @@ public class SceneController : MonoBehaviour
         TrackableHit hit;
         TrackableHitFlags raycastFilter = TrackableHitFlags.PlaneWithinBounds | TrackableHitFlags.PlaneWithinPolygon;
 
-        if (Session.Raycast (touch.position.x, touch.position.y, raycastFilter, out hit))
+        if (Frame.Raycast (touch.position.x, touch.position.y, raycastFilter, out hit))
         {
             SetSelectedPlane (hit.Trackable as TrackedPlane);
         }
     }
 
-    /// <summary>
-    /// Sets  the selected plane and passes it to the other controllers that are part of the scene.
-    /// </summary>
-    private void SetSelectedPlane(TrackedPlane selectedPlane)
+    void SetSelectedPlane (TrackedPlane selectedPlane)
     {
-        Debug.Log("Selected plane centered at " + selectedPlane.Position);
-        // Add to the end of SetSelectedPlane
+        Debug.Log("Selected plane centered at " + selectedPlane.CenterPose.position);
+        // Add to the end of SetSelectedPlane.
         scoreboard.SetSelectedPlane(selectedPlane);
         // Add to SetSelectedPlane()
         snakeController.SetPlane(selectedPlane);
