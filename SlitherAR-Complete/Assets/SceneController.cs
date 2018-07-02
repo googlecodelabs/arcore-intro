@@ -33,8 +33,6 @@ using GoogleARCore;
 public class SceneController : MonoBehaviour
 {
 
-    // Prefab used to render all the tracked planes.
-    public GameObject trackedPlanePrefab;
     // Camera used for tap input raycasting.
     public Camera firstPersonCamera;
     public ScoreboardController scoreboard;
@@ -58,9 +56,6 @@ public class SceneController : MonoBehaviour
         }
 
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
-
-        // Add this to the bottom of Update
-        ProcessNewPlanes();
 
         // Add to the end of Update()
         ProcessTouches();
@@ -86,24 +81,6 @@ public class SceneController : MonoBehaviour
     }
 
     /// <summary>
-    /// List the newly detected planes from the ARCore Frame object and render them.
-    /// </summary>
-    void ProcessNewPlanes()
-    {
-        List<TrackedPlane> planes = new List<TrackedPlane>();
-        Session.GetTrackables (planes, TrackableQueryFilter.New);
-
-        for (int i = 0; i < planes.Count; i++) {
-            // Instantiate a plane visualization prefab and set it to track the new plane.
-            // The transform is set to the origin with an identity rotation since the mesh
-            // for our prefab is updated in Unity World coordinates.
-            GameObject planeObject = Instantiate(trackedPlanePrefab, Vector3.zero,
-                                Quaternion.identity, transform);
-            planeObject.GetComponent<TrackedPlaneController>().SetTrackedPlane(planes[i]);
-        }
-    }
-
-    /// <summary>
     /// Processes a single tap to select a plane based on a hittest.
     /// </summary>
     void ProcessTouches()
@@ -119,11 +96,11 @@ public class SceneController : MonoBehaviour
 
         if (Frame.Raycast (touch.position.x, touch.position.y, raycastFilter, out hit))
         {
-            SetSelectedPlane (hit.Trackable as TrackedPlane);
+            SetSelectedPlane (hit.Trackable as DetectedPlane);
         }
     }
 
-    void SetSelectedPlane (TrackedPlane selectedPlane)
+    void SetSelectedPlane (DetectedPlane selectedPlane)
     {
         Debug.Log("Selected plane centered at " + selectedPlane.CenterPose.position);
         // Add to the end of SetSelectedPlane.
