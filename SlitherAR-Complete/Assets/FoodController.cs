@@ -32,7 +32,7 @@ using GoogleARCore;
 public class FoodController : MonoBehaviour
 {
     // Plane to spawn the food objects on.
-    private TrackedPlane trackedPlane;
+    private DetectedPlane detectedPlane;
     // The current food instance or null.
     private GameObject foodInstance;
     // Age in seconds of the food instance.
@@ -45,21 +45,21 @@ public class FoodController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (trackedPlane == null)
+        if (detectedPlane == null)
         {
             return;
         }
 
-        if (trackedPlane.TrackingState != TrackingState.Tracking)
+        if (detectedPlane.TrackingState != TrackingState.Tracking)
         {
             return;
         }
 
         // Check for the plane being subsumed
         // If the plane has been subsumed switch attachment to the subsuming plane.
-        while (trackedPlane.SubsumedBy != null)
+        while (detectedPlane.SubsumedBy != null)
         {
-            trackedPlane = trackedPlane.SubsumedBy;
+            detectedPlane = detectedPlane.SubsumedBy;
         }
 
         if (foodInstance == null || foodInstance.activeSelf == false)
@@ -87,15 +87,15 @@ public class FoodController : MonoBehaviour
         // Pick a location.  This is done by selecting a vertex at random and then
         // a random point between it and the center of the plane.
         List<Vector3> vertices = new List<Vector3>();
-        trackedPlane.GetBoundaryPolygon (vertices);
+        detectedPlane.GetBoundaryPolygon (vertices);
         Vector3 pt = vertices[Random.Range(0, vertices.Count)];
         float dist = Random.Range(0.05f, 1f);
-        Vector3 position = Vector3.Lerp(pt, trackedPlane.CenterPose.position, dist);
+        Vector3 position = Vector3.Lerp(pt, detectedPlane.CenterPose.position, dist);
         // Move the object above the plane.
         position.y += .05f;
 
         // Create an ARCore anchor for this position.
-        Anchor anchor = trackedPlane.CreateAnchor (new Pose (position, Quaternion.identity));
+        Anchor anchor = detectedPlane.CreateAnchor (new Pose (position, Quaternion.identity));
 
         // Create the instance.
         foodInstance = Instantiate(foodItem, position, Quaternion.identity, anchor.transform);
@@ -110,8 +110,8 @@ public class FoodController : MonoBehaviour
         foodInstance.AddComponent<FoodMotion>();
     }
 
-    public void SetSelectedPlane(TrackedPlane selectedPlane)
+    public void SetSelectedPlane(DetectedPlane selectedPlane)
     {
-        trackedPlane = selectedPlane;
+        detectedPlane = selectedPlane;
     }
 }

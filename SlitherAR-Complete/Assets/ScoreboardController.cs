@@ -37,7 +37,7 @@ public class ScoreboardController : MonoBehaviour
     // The fixed position in the real world for the scoreboard.
     private Anchor anchor;
     // The plane the scoreboard is positioned above/near.
-    private TrackedPlane trackedPlane;
+    private DetectedPlane detectedPlane;
     // The scoreboard's offset from the plane in the Y axis.
     private float yOffset;
     private int score;
@@ -61,16 +61,16 @@ public class ScoreboardController : MonoBehaviour
         }
 
         // If there is no plane, then return
-        if (trackedPlane == null)
+        if (detectedPlane == null)
         {
             return;
         }
 
         // Check for the plane being subsumed.
         // If the plane has been subsumed switch attachment to the subsuming plane.
-        while (trackedPlane.SubsumedBy != null)
+        while (detectedPlane.SubsumedBy != null)
         {
-            trackedPlane = trackedPlane.SubsumedBy;
+            detectedPlane = detectedPlane.SubsumedBy;
         }
 
         // Make the scoreboard face the viewer
@@ -78,16 +78,16 @@ public class ScoreboardController : MonoBehaviour
 
         // Move the position to stay consistent with the plane
         transform.position = new Vector3(transform.position.x,
-            trackedPlane.CenterPose.position.y + yOffset,
+            detectedPlane.CenterPose.position.y + yOffset,
             transform.position.z);
     }
 
     /// <summary>
     /// Sets the selected plane and anchor it.
     /// </summary>
-    public void SetSelectedPlane(TrackedPlane trackedPlane)
+    public void SetSelectedPlane(DetectedPlane detectedPlane)
     {
-        this.trackedPlane = trackedPlane;
+        this.detectedPlane = detectedPlane;
         CreateAnchor();
     }
 
@@ -106,14 +106,14 @@ public class ScoreboardController : MonoBehaviour
         {
             DestroyObject(anchor);
         }
-        anchor = trackedPlane.CreateAnchor (new Pose (anchorPosition, Quaternion.identity));
+        anchor = detectedPlane.CreateAnchor (new Pose (anchorPosition, Quaternion.identity));
 
         // Attach the scoreboard to the anchor.
         transform.position = anchorPosition;
         transform.SetParent(anchor.transform);
 
         // Record the y offset from the plane.
-        yOffset = transform.position.y - trackedPlane.CenterPose.position.y;
+        yOffset = transform.position.y - detectedPlane.CenterPose.position.y;
 
         // Finally, enable the renderers.
         foreach (Renderer r in GetComponentsInChildren<Renderer>())

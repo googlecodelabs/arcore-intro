@@ -32,7 +32,7 @@ using GoogleARCore;
 public class SnakeController : MonoBehaviour
 {
     // The plane to create the snake on.
-    private TrackedPlane trackedPlane;
+    private DetectedPlane detectedPlane;
 
     // Prefab for the snake head.  It is required to have
     // a rigidbody component.
@@ -92,9 +92,9 @@ public class SnakeController : MonoBehaviour
         snakeInstance.transform.forward * dist / .01f;
     }
 
-    public void SetPlane(TrackedPlane plane)
+    public void SetPlane(DetectedPlane plane)
     {
-        trackedPlane = plane;
+        detectedPlane = plane;
         // Spawn a new snake.
         SpawnSnake();
     }
@@ -106,8 +106,7 @@ public class SnakeController : MonoBehaviour
             DestroyImmediate(snakeInstance);
         }
 
-        Vector3 pos = trackedPlane.CenterPose.position;
-        pos.y += 0.1f;
+        Vector3 pos = detectedPlane.CenterPose.position;
 
         // Not anchored, it is rigidbody that is influenced by the physics engine.
         snakeInstance = Instantiate (snakeHeadPrefab, pos,
